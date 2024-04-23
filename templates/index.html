@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('bg.jpg');
+            background-size: cover;
+            min-height: 100%
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-section {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .age-section { background-color: #b4cffa; }
+        .health-section { background-color: #fab4c2; }
+        .lifestyle-section { background-color: #fab4c2; }
+        .demographic-section { background-color: #fab4e6; }
+        label, select, input[type="number"], button {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #predictionResult {
+            color: #d00;
+            font-size: 1.2em;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Heart Disease Prediction</h1>
+        <form id="heartDiseaseForm">
+            <div class="form-section age-section">
+                <label for="ageCategory">Age Category:</label>
+                <select id="ageCategory" name="ageCategory" required>
+                <option value="">Select Age Category</option>
+                <option value="18-24">18-24</option>
+                <option value="25-29">25-29</option>
+                <option value="30-34">30-34</option>
+                <option value="35-39">35-39</option>
+                <option value="45-49">45-49</option>
+                <option value="50-54">50-54</option>
+                <option value="55-59">55-59</option>
+                <option value="60-64">60-64</option>
+                <option value="65-69">65-69</option>
+                <option value="70-74">70-74</option>
+                <option value="75-79">75-79</option>
+                <option value="80 or older">80 or older</option>
+            </select><br>
+
+            <label for="genHealth">General Health:</label><br>
+            <select id="genHealth" name="genHealth" required>
+                <option value="">Select General Health</option>
+                <option value="1">Poor</option>
+                <option value="2">Fair</option>
+                <option value="3">Good</option>
+                <option value="4">Very Good</option>
+                <option value="5">Excellent</option>
+            </select><br>
+
+            <label for="bmi">BMI:</label><br>
+            <input type="number" id="bmi" name="bmi" placeholder="Enter your BMI (e.g., 25)" required><br>
+
+            <label for="physicalHealth">Physical Health:</label><br>
+            <input type="number" id="physicalHealth" name="physicalHealth" placeholder="Enter physical health days affected (0-30)" required><br>
+
+            <label for="sleepTime">Sleep Time:</label><br>
+            <input type="number" id="sleepTime" name="sleepTime" placeholder="Enter average sleep hours per night (e.g., 8)" required><br>
+
+            <label for="race">Race:</label><br>
+            <select id="race" name="race" required>
+                <option value="">Select Race</option>
+                <option value="1">White</option>
+                <option value="2">Black</option>
+                <option value="3">American Indian</option>
+                <option value="4">Asian</option>
+                <option value="5">Hispanic</option>
+                <option value="6">Other</option>
+            </select><br>
+
+            <label for="diabetic">Diabetic:</label><br>
+            <select id="diabetic" name="diabetic" required>
+                <option value="">Are you diabetic?</option>
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+                <option value="2">No, but borderline diabetes</option>
+                <option value="3">Yes, during pregnancy</option>
+            </select><br>
+
+            <label for="sex">Sex:</label><br>
+            <select id="sex" name="sex" required>
+                <option value="">Select Sex</option>
+                <option value="0">Male</option>
+                <option value="1">Female</option>
+            </select><br>
+
+            <label for="diffWalking">Difficulty Walking:</label><br>
+            <select id="diffWalking" name="diffWalking" required>
+                <option value="">Do you have difficulty walking?</option>
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+            </select><br>
+
+            <button type="submit">Predict</button>
+        </form>
+
+        <div id="predictionResult"></div></div>
+    </div>
+
+    <script>
+        document.getElementById('heartDiseaseForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.error) {
+                    document.getElementById('predictionResult').innerHTML = 'Error: ' + data.error;
+                } else {
+                    document.getElementById('predictionResult').innerHTML = data.prediction_text;
+                }
+            })
+            .catch(error => document.getElementById('predictionResult').innerHTML = 'Error: ' + error);
+        });
+    </script>
+</body>
+</html>
